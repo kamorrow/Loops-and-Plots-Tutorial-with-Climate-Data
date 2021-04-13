@@ -76,24 +76,25 @@ cities <- unique(climate_mean$city_name) # gets list of the common cities from t
 
 
 ### Plotting Climatologies
- 
+
 ```{r}
+
 # Plot one climatology per city with both temperature and rainfall data (missing some sloppily removed before)
 
 for(i in seq_along(cities)){
   # plot data for each city common between the temperature and rainfall data
   ggplot(data = subset(climate_mean, climate_mean$city_name == cities[i])) +
-    # blue columns for rainfall
-    geom_col(aes(x = month_name,
-                 y = mean_rainfall*4), # adjustment to make the scales work together
-             color = "navy", fill = "blue", alpha = "0.6") +
     # red ribbon for area between mean max temp and mean min temp
     geom_ribbon(aes(x = month_name,
                     ymax = mean_temp_max,
-                    ymin = mean_temp_min, group = 1),
-                fill = "red",
-                alpha = 0.3) +
-    # red line and points for mean temeprature as mean of mean max and min temp
+                    ymin = mean_temp_min,
+                    group = 1),
+                fill = "red", alpha = 0.3) +
+    # blue columns for rainfall
+    geom_col(aes(x = month_name,
+                 y = mean_rainfall*4),
+             color = "navy", fill = "blue", alpha = 0.6) +
+    # red line and points for mean temperature as mean of mean max and min temp
     geom_line(aes(x = month_name,
                   y = ((mean_temp_max + mean_temp_min)/2),
                   group = 1),
@@ -103,23 +104,26 @@ for(i in seq_along(cities)){
                    y = ((mean_temp_max + mean_temp_min)/2)),
                color = "red") +
     # scale wrangling
-    scale_y_continuous(limits = c(-2, 35), # keeps scales consistent across plots
+    scale_y_continuous(limits = c(-2, 35), # keeps scales consistent across plots, >-2 will cut off Canberra ribbon
                        sec.axis = sec_axis(~./4, name = "Rainfall (mm)")) + # adds second axis for rainfall, adjusted to counteract the scale factor above
-    scale_colour_manual(values = c("blue", "red")) +
+    scale_color_manual(values = c("blue", "red")) +
     labs(y = "Temperature (°C)",
          x = "",
          title = "Monthly Mean Temperature Range & Mean Rainfall",
          # subtitle of plot based on city in question
          subtitle = paste(cities[i],", Australia", sep = ""),
+         # include reference to city in question in caption
          caption = paste("Mean monthly temperature shown as red points and line with the range between the mean\nmaximum and mean minimum temperatures shaded in red; blue columns show mean\nmonthly rainfall for ", cities[i], ", Australia.\n\nData: Australian Bureau of Meterology\n#tidytuesday 2020-01-07\nKeene Morrow",
-                         sep = "")) + 
+                         sep = "")) +
     theme_minimal() +
     theme(plot.caption = element_text(hjust = 0, face = "italic"))
   
+  # save plot with city in question in the file name
   ggsave(here::here("figures", paste(cities[i], "_climate.png", sep = "")),
          height = 7, width = 7)
 }
 ```
+
 
 ![](figures/Brisbane_climate.png)
 
