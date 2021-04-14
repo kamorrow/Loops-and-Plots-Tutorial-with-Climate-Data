@@ -104,7 +104,7 @@ for(i in seq_along(cities)){
                    y = ((mean_temp_max + mean_temp_min)/2)),
                color = "red") +
     # scale wrangling
-    scale_y_continuous(limits = c(-2, 35), # keeps scales consistent across plots, >-2 will cut off Canberra ribbon
+    scale_y_continuous(limits = c(-2, 35), # keeps scales consistent across plots, >-2 will cut off Canberra ribbon [CHECK OUT COORD_CARTESIAN FOR SOMETHING BETTER (MAYBE)]
                        sec.axis = sec_axis(~./4, name = "Rainfall (mm)")) + # adds second axis for rainfall, adjusted to counteract the scale factor above
     scale_color_manual(values = c("blue", "red")) +
     labs(y = "Temperature (°C)",
